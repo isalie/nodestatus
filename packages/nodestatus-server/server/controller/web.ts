@@ -1,10 +1,10 @@
 import { Context, Middleware } from 'koa';
 import {
   bulkCreateServer,
-  createServer as _addServer,
-  delServer as _delServer,
-  getListServers,
-  setServer as _setServer,
+  createServer,
+  deleteServer,
+  readServersList,
+  updateServer,
   setOrder
 } from '../model/server';
 import { createRes } from '../lib/utils';
@@ -19,8 +19,8 @@ async function handleRequest<T>(ctx: Context, handler: Promise<T>): Promise<void
   }
 }
 
-const listServers: Middleware = async ctx => {
-  await handleRequest(ctx, getListServers().then(data => data.sort((x, y) => y.order - x.order)));
+const getListServers: Middleware = async ctx => {
+  await handleRequest(ctx, readServersList().then(data => data.sort((x, y) => y.order - x.order)));
 };
 
 const setServer: Middleware = async ctx => {
@@ -32,7 +32,7 @@ const setServer: Middleware = async ctx => {
     return;
   }
   if (username === data.username) delete data.username;
-  await handleRequest(ctx, _setServer(username, data));
+  await handleRequest(ctx, updateServer(username, data));
 };
 
 const addServer: Middleware = async ctx => {
@@ -51,18 +51,18 @@ const addServer: Middleware = async ctx => {
       ctx.body = createRes(1, 'Wrong request');
     }
   } else {
-    await handleRequest(ctx, _addServer(data));
+    await handleRequest(ctx, createServer(data));
   }
 };
 
-const delServer: Middleware = async ctx => {
+const removeServer: Middleware = async ctx => {
   const { username = '' } = ctx.params;
   if (!username) {
     ctx.status = 400;
     ctx.body = createRes(1, 'Wrong request');
     return;
   }
-  await handleRequest(ctx, _delServer(username));
+  await handleRequest(ctx, deleteServer(username));
 };
 
 const modifyOrder: Middleware = async ctx => {
@@ -80,10 +80,10 @@ const queryEvents: Middleware = async ctx => {
 };
 
 export {
-  listServers,
+  getListServers,
   setServer,
   addServer,
-  delServer,
+  removeServer,
   modifyOrder,
   queryEvents
 };

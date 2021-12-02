@@ -14,7 +14,7 @@ const resolveResult = (item: Server | null): IServer | null => {
   return Object.assign(item, { order: orderMap.get(item.id) || item.id || 0 });
 };
 
-const updateOrder = (order: string, shouldEmit = true): void => {
+const updateCacheOrder = (order: string, shouldEmit = true): void => {
   orderMap.clear();
   const orderList = order === ''
     ? []
@@ -32,7 +32,7 @@ const queryOrder = async (): Promise<void> => {
     }
   });
   isInitial = false;
-  return updateOrder(order?.value || '');
+  return updateCacheOrder(order?.value || '');
 };
 
 export async function setOrder(order: string, Prisma = prisma): Promise<void> {
@@ -42,10 +42,10 @@ export async function setOrder(order: string, Prisma = prisma): Promise<void> {
     update: { value: order },
     create: { name: 'order', value: order }
   });
-  updateOrder(order, shouldEmit);
+  updateCacheOrder(order, shouldEmit);
 }
 
-export async function getServer(username: string): Promise<IServer | null> {
+export async function readServer(username: string): Promise<IServer | null> {
   const item = await prisma.server.findUnique({
     where: {
       username
@@ -54,7 +54,7 @@ export async function getServer(username: string): Promise<IServer | null> {
   return resolveResult(item);
 }
 
-export async function getServerPassword(username: string): Promise<string | null> {
+export async function readServerPassword(username: string): Promise<string | null> {
   const item = await prisma.server.findUnique({
     where: {
       username
@@ -63,7 +63,7 @@ export async function getServerPassword(username: string): Promise<string | null
   return item?.password || null;
 }
 
-export async function getListServers(): Promise<IServer[]> {
+export async function readServersList(): Promise<IServer[]> {
   const queries: [Promise<Server[]>, Promise<void>?] = [prisma.server.findMany()];
   isInitial && queries.push(queryOrder());
 
@@ -99,7 +99,7 @@ export async function bulkCreateServer(items: Prisma.ServerCreateInput[]): Promi
   emitter.emit('update');
 }
 
-export async function delServer(username: string): Promise<void> {
+export async function deleteServer(username: string): Promise<void> {
   await prisma.$transaction(async prisma => {
     const server = await prisma.server.delete({
       where: {
@@ -112,7 +112,7 @@ export async function delServer(username: string): Promise<void> {
   emitter.emit('update', username, true);
 }
 
-export async function setServer(username: string, obj: Partial<Server>): Promise<void> {
+export async function updateServer(username: string, obj: Partial<Server>): Promise<void> {
   await prisma.server.update({
     where: {
       username
