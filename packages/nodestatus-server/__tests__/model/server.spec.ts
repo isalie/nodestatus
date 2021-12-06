@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { DeepMockProxy } from 'jest-mock-extended/lib/Mock';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import prisma from '../server/lib/prisma';
+import prisma from '../../server/lib/prisma';
 import {
   createServer,
   readServer,
@@ -11,9 +11,9 @@ import {
   bulkCreateServer,
   updateOrder,
   readServerPassword
-} from '../server/model/server';
-import { emitter as Emitter } from '../server/lib/utils';
-import { Prisma } from '../types/server';
+} from '../../server/model/server';
+import { emitter as Emitter } from '../../server/lib/utils';
+import { Prisma } from '../../types/server';
 
 jest.mock('../server/lib/utils', () => ({
   __esModule: true,
