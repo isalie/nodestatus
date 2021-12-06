@@ -16,7 +16,7 @@ test('Create Event', async () => {
 });
 
 test('Read Events', async () => {
-  await expect(readEvents()).resolves.toBe([]);
+  await expect(readEvents()).resolves.toStrictEqual([]);
   await createEvent('username01');
   await expect(readEvents()).resolves.toHaveLength(1);
 });
