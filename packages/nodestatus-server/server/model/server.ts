@@ -35,7 +35,7 @@ const queryOrder = async (): Promise<void> => {
   return updateCacheOrder(order?.value || '');
 };
 
-export async function setOrder(order: string, Prisma = prisma): Promise<void> {
+export async function updateOrder(order: string, Prisma = prisma): Promise<void> {
   const shouldEmit = Prisma === prisma;
   await Prisma.option.upsert({
     where: { name: 'order' },
@@ -77,7 +77,7 @@ export async function createServer(item: Prisma.ServerCreateInput): Promise<void
     const server = await prisma.server.create({ data: item });
     const order = Array.from(orderMap.keys());
     order.push(server.id);
-    await setOrder(order.join(','), prisma as PrismaClient);
+    await updateOrder(order.join(','), prisma as PrismaClient);
   });
   emitter.emit('update', item.username);
 }
@@ -94,7 +94,7 @@ export async function bulkCreateServer(items: Prisma.ServerCreateInput[]): Promi
       .create({ data: item })
       .then(server => order.push(server.id))));
     const newOrder = Array.from(orderMap.keys()).concat(order);
-    await setOrder(newOrder.join(','), prisma as PrismaClient);
+    await updateOrder(newOrder.join(','), prisma as PrismaClient);
   });
   emitter.emit('update');
 }
@@ -107,7 +107,7 @@ export async function deleteServer(username: string): Promise<void> {
       }
     });
     orderMap.delete(server.id);
-    await setOrder(Array.from(orderMap.keys()).join(','), prisma as PrismaClient);
+    await updateOrder(Array.from(orderMap.keys()).join(','), prisma as PrismaClient);
   });
   emitter.emit('update', username, true);
 }

@@ -5,7 +5,7 @@ import {
   deleteServer,
   readServersList,
   updateServer,
-  setOrder
+  updateOrder
 } from '../model/server';
 import { createRes } from '../lib/utils';
 import { readEvents } from '../model/event';
@@ -72,7 +72,7 @@ const modifyOrder: Middleware = async ctx => {
     ctx.body = createRes(1, 'Wrong request');
     return;
   }
-  await handleRequest(ctx, setOrder(order.join(',')));
+  await handleRequest(ctx, updateOrder(order.join(',')));
 };
 
 const queryEvents: Middleware = async ctx => {

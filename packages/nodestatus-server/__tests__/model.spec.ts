@@ -9,7 +9,7 @@ import {
   updateServer,
   deleteServer,
   bulkCreateServer,
-  setOrder,
+  updateOrder,
   readServerPassword
 } from '../server/model/server';
 import { emitter as Emitter } from '../server/lib/utils';
@@ -23,7 +23,7 @@ jest.mock('../server/lib/utils', () => ({
 const emitter = Emitter as DeepMockProxy<EventEmitter>;
 
 afterEach(async () => {
-  await setOrder('');
+  await updateOrder('');
   mockReset(emitter);
   return prisma.$transaction([prisma.server.deleteMany({}), prisma.option.deleteMany({})]);
 });
@@ -176,7 +176,7 @@ test('Set order', async () => {
   await expect(bulkCreateServer([mockServer('Megumi'), mockServer('Siesta'), mockServer('Emilia'), mockServer('Irina')])).resolves.toBeUndefined();
   const servers = await readServersList();
   const ids = servers.map(({ id }) => id).sort(() => Math.random() - 0.5);
-  await setOrder(ids.join(','));
+  await updateOrder(ids.join(','));
   /* Set order should call query order and emitter */
   expect(emitter.emit.mock.calls.length).toBe(2);
   const result = await readServersList();
