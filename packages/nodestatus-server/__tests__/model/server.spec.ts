@@ -15,7 +15,7 @@ import {
 import { emitter as Emitter } from '../../server/lib/utils';
 import { Prisma } from '../../types/server';
 
-jest.mock('../server/lib/utils', () => ({
+jest.mock('../../server/lib/utils', () => ({
   __esModule: true,
   emitter: mockDeep<EventEmitter>()
 }));
