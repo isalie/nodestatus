@@ -5,6 +5,8 @@ services:
     restart: always
 
     environment:
+      INTERVAL: 1500
+      DATABASE: mysql://root:LzJTPsEk2TGwnicKjK2T@containers-us-west-25.railway.app:6317/railway
       PORT: 35601
       VERBOSE: "false"
       THEME: "hotaru-theme"
