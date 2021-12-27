@@ -15,8 +15,8 @@ services:
       USE_IPC: "true"
       USE_WEB: "true"
 
-      WEB_USERNAME: "admin"
-      WEB_PASSWORD: ""
+      WEB_USERNAME: "ironhide"
+      WEB_PASSWORD: "wang1234"
       WEB_SECRET: ""
 
 
